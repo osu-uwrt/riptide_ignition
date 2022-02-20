@@ -1,0 +1,14 @@
+material SandAndStones
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture ../textures/soil_sand_0045_01.jpg
+      }
+    }
+  }
+}

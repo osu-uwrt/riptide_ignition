@@ -1,6 +1,6 @@
 import launch
 from launch.launch_description import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction, GroupAction
+from launch.actions import DeclareLaunchArgument, OpaqueFunction, GroupAction, ExecuteProcess
 from launch.launch_description_sources import AnyLaunchDescriptionSource
 from launch.actions import IncludeLaunchDescription
 from ament_index_python.packages import get_package_share_directory
@@ -40,21 +40,16 @@ def evaluate_xacro(context, *args, **kwargs):
 
     print('Converted model path', xacroFilePath)
 
-   # URDF spawner
+    # URDF spawner
+    urdf_spawner = ExecuteProcess(
+        cmd=["ign", "service", "-s", "/world/default/create", "--reqtype", "ignition.msgs.EntityFactory", "--reptype", "ignition.msgs.Boolean", "--timeout", "1000", "--req", "'sdf_filename:", "\"/tmp/{}.xml\",".format(robot), "name:", "\"{}\"'".format(robot)],
+        output='both',
+        shell=True
+    )
+   
     args=('-gazebo_namespace /gazebo '
         '-x %s -y %s -z %s -R %s -P %s -Y %s -entity %s -file %s' 
         %(x, y, z, roll, pitch, yaw, robot, xacroFilePath)).split()
-
-    # Urdf spawner. NB: node namespace does not prefix the spawning service, 
-    # as using a leading /
-    # NB 2: node namespace prefixes the robot_description topic
-    urdf_spawner = Node(
-        name = 'urdf_spawner',
-        package='gazebo_ros',
-        executable='spawn_entity.py',
-        output='screen',
-        arguments=args
-    )
 
     robot_state_publisher = Node(
         name = 'robot_state_publisher',
@@ -63,6 +58,8 @@ def evaluate_xacro(context, *args, **kwargs):
         output = 'screen',
         parameters=[{'robot_description': xacroData}], # Use subst here
     )
+    
+    
 
     # Message to tf
     message_to_tf_launch = os.path.join(
@@ -84,8 +81,8 @@ def evaluate_xacro(context, *args, **kwargs):
     return [
         GroupAction([
             PushRosNamespace(robot), 
-            urdf_spawner,
-            robot_state_publisher
+            robot_state_publisher,
+            urdf_spawner
         ]),
         message_to_tf_launch
     ]
@@ -100,20 +97,20 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-    DeclareLaunchArgument('robot', default_value='tempest', description='name of the robot to spawn'),
-    DeclareLaunchArgument('debug', default_value='0', description='whether to put gazebo into debug mode'),
-    DeclareLaunchArgument('x', default_value='0.0', description="X coordinate of the vehicle's initial position (in ENU)"),
-    DeclareLaunchArgument('y', default_value='0.0',  description="Y coordinate of the vehicle's initial position (in ENU)"),
-    DeclareLaunchArgument('z', default_value='0.0',  description="Z coordinate of the vehicle's initial position (in ENU)"),
-    DeclareLaunchArgument('roll', default_value='0.0', description="Z coordinate of the vehicle's initial position (in ENU)"),
-    DeclareLaunchArgument('pitch', default_value='0.0', description="Z coordinate of the vehicle's initial position (in ENU)"),
-    DeclareLaunchArgument('yaw', default_value='0.0', description="Z coordinate of the vehicle's initial position (in ENU)"),
-    OpaqueFunction(function=evaluate_xacro),
-    IncludeLaunchDescription(
-        AnyLaunchDescriptionSource(sensor_remap),
-        launch_arguments=[
-            ('robot', LC('robot')),
-        ]
-    )
+        DeclareLaunchArgument('robot', default_value='tempest', description='name of the robot to spawn'),
+        DeclareLaunchArgument('debug', default_value='0', description='whether to put gazebo into debug mode'),
+        DeclareLaunchArgument('x', default_value='0.0', description="X coordinate of the vehicle's initial position (in ENU)"),
+        DeclareLaunchArgument('y', default_value='0.0',  description="Y coordinate of the vehicle's initial position (in ENU)"),
+        DeclareLaunchArgument('z', default_value='0.0',  description="Z coordinate of the vehicle's initial position (in ENU)"),
+        DeclareLaunchArgument('roll', default_value='0.0', description="Z coordinate of the vehicle's initial position (in ENU)"),
+        DeclareLaunchArgument('pitch', default_value='0.0', description="Z coordinate of the vehicle's initial position (in ENU)"),
+        DeclareLaunchArgument('yaw', default_value='0.0', description="Z coordinate of the vehicle's initial position (in ENU)"),
+        OpaqueFunction(function=evaluate_xacro),
+        IncludeLaunchDescription(
+            AnyLaunchDescriptionSource(sensor_remap),
+            launch_arguments=[
+                ('robot', LC('robot')),
+            ]
+        )
     ]) 
 
