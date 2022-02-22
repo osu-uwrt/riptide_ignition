@@ -26,15 +26,8 @@
         <physics name="default_physics" default="true" type="ode">
             <max_step_size>0.002</max_step_size>
             <real_time_factor>1</real_time_factor>
-            <real_time_update_rate>500</real_time_update_rate>
-            <ode>
-                <solver>
-                    <type>quick</type>
-                    <iters>50</iters>
-                    <sor>0.5</sor>
-                </solver>
-            </ode>
         </physics>
+
         <plugin
             filename="ignition-gazebo-physics-system"
             name="ignition::gazebo::systems::Physics">
@@ -50,28 +43,20 @@
         <plugin
             filename="ignition-gazebo-buoyancy-system"
             name="ignition::gazebo::systems::Buoyancy">
-            <uniform_fluid_density>1000</uniform_fluid_density>
-        </plugin>
 
-        <!-- <scene>
-            <ambient>0.01 0.01 0.01 1.0</ambient>
-            <sky>
-                <clouds>
-                    <speed>0</speed>
-                </clouds>
-            </sky>
-            <shadows>1</shadows>
-        </scene> -->
+            <graded_buoyancy>
+                <default_density>1000</default_density>
+                <density_change>
+                    <above_depth>0</above_depth>
+                    <density>1</density>
+                </density_change>
+            </graded_buoyancy>
+        </plugin>
 
         <gravity>0 0 -9.8</gravity>
         <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
         <atmosphere type='adiabatic' />
         <wind />
-        
-        <!-- Global light source -->
-        <!-- <include>
-            <uri>model://sun</uri>
-        </include> -->
 
         <!-- Virtual NED frame -->
         <include>
@@ -86,7 +71,7 @@
         </include>
 
         <light type="directional" name="sun1">
-            <cast_shadows>false</cast_shadows>
+            <cast_shadows>false</cast_shadows> <!--will make water opaque if true-->
             <pose>0 0 10 0 0 0</pose>
             <diffuse>1 1 1 1</diffuse>
             <specular>0.5 0.5 0.5 1</specular>
@@ -97,12 +82,6 @@
                 <quadratic>0.001</quadratic>
             </attenuation>
             <direction>-0.5 0.1 -0.9</direction>
-        </light>      
-
-        <plugin
-            filename="ignition-gazebo-buoyancy-system"
-            name="ignition::gazebo::systems::Buoyancy">
-            <uniform_fluid_density>1000</uniform_fluid_density>
-        </plugin>
+        </light>
     </world>
 </sdf>
