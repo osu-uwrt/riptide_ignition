@@ -5,7 +5,7 @@ from ament_index_python.packages import get_package_share_directory
 import xacro
 import os
 
-robot = 'puddles'
+robot = 'tempest'
 
 modelPath = os.path.join(
     get_package_share_directory('riptide_descriptions2'),

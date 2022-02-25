@@ -40,10 +40,10 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'depth_remap = riptide_gazebo2.depth_remap:main',
-            'imu_remap = riptide_gazebo2.imu_remap:main',
-            'kill_switch_publisher = riptide_gazebo2.kill_switch_publisher:main',
-            'thrust_remap = riptide_gazebo2.thrust_remap:main',
+            'depth_remap = riptide_ignition2.depth_remap:main',
+            'imu_remap = riptide_ignition2.imu_remap:main',
+            'kill_switch_publisher = riptide_ignition2.kill_switch_publisher:main',
+            'thrust_remap = riptide_ignition2.thrust_remap:main',
         ],
     },
 )

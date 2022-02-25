@@ -44,13 +44,15 @@
             filename="ignition-gazebo-buoyancy-system"
             name="ignition::gazebo::systems::Buoyancy">
 
-            <graded_buoyancy>
+            <uniform_fluid_buoyancy>1000</uniform_fluid_buoyancy>
+
+            <!-- <graded_buoyancy>
                 <default_density>1000</default_density>
                 <density_change>
                     <above_depth>0</above_depth>
                     <density>1</density>
                 </density_change>
-            </graded_buoyancy>
+            </graded_buoyancy> -->
         </plugin>
 
         <gravity>0 0 -9.8</gravity>
